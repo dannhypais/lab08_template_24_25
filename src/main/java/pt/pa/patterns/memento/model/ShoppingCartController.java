@@ -1,31 +1,35 @@
 package pt.pa.patterns.memento.model;
 
+import pt.pa.patterns.memento.view.ShoppingCartPanel;
+
 import java.util.Collection;
 import java.util.Date;
 
 public class ShoppingCartController {
     private ShoppingCart cart;
+    private Caretaker caretaker;
+    private ShoppingCartPanel shoppingCartPanel;
 
     public ShoppingCartController() {
         cart = new ShoppingCart();
-
+        caretaker = new Caretaker(cart);
     }
 
     public void addProduct(String name, double cost) {
-
+        caretaker.saveState();
         Product p = new Product(name, cost);
         cart.addProduct(p);
     }
 
     public void reset() {
-
+        caretaker.saveState();
         cart.reset();
     }
 
     public void removeProduct(String name) {
         for (Product p : cart.getProducts())
             if (p.getName().equals(name)) {
-
+                caretaker.saveState();
                 cart.removeProduct(p);
                 return;
             }
@@ -34,7 +38,7 @@ public class ShoppingCartController {
 
 
     public void undo() throws NoMementoException {
-        //complete
+        caretaker.restoreState();
     }
 
     public Collection<Product> getProducts() {

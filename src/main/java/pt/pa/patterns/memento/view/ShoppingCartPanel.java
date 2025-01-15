@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import pt.pa.patterns.memento.model.NoMementoException;
 import pt.pa.patterns.memento.model.Product;
 import pt.pa.patterns.memento.model.ShoppingCartController;
 
@@ -20,6 +21,7 @@ public class ShoppingCartPanel {
     private Button buttonAddProduct;
     private TextField textFieldProductName;
     private TextField textFieldPrice;
+    private Button buttonReset;
 
     public GridPane getGridPaneMain() {
         return gridPaneMain;
@@ -59,8 +61,10 @@ public class ShoppingCartPanel {
 
 
         buttonUndo = new Button("Undo");
+        buttonReset = new Button("Reset");
         HBox hBoxUndo = new HBox();
         hBoxUndo.getChildren().add(buttonUndo);
+        hBoxUndo.getChildren().add(buttonReset);
         hBoxUndo.setAlignment(Pos.CENTER_RIGHT);
         hBoxUndo.setStyle("-fx-padding: 2px 0 0 0");
         gridPaneCartContents.add(hBoxUndo, 0, 2);
@@ -94,7 +98,25 @@ public class ShoppingCartPanel {
                 }
             }
         });
+        buttonUndo.setOnAction(new EventHandler<ActionEvent>() {
+           @Override
+           public void handle(ActionEvent actionEvent) {
+               try {
+                   shoppingCartController.undo();
+                   updateProductCartList();
+               } catch (NoMementoException e) {
+                   showError("No undo available.");
+               }
+           }
+        });
 
+        buttonReset.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                shoppingCartController.reset();
+                updateProductCartList();
+            }
+        });
     }
 
     private void cleanInput() {

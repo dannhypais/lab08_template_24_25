@@ -2,10 +2,9 @@ package pt.pa.patterns.memento.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
-public class ShoppingCart{
+public class ShoppingCart implements Originator{
     private List<Product> products;
 
     public ShoppingCart() {
@@ -42,4 +41,29 @@ public class ShoppingCart{
     }
 
 
+    @Override
+    public Memento createMemento() {
+        return new ShoppingCartMemento(products);
+    }
+
+    @Override
+    public void setMemento(Memento savedState) {
+        if(savedState instanceof ShoppingCartMemento){
+            reset();
+            getProducts().addAll(((ShoppingCartMemento)savedState).products);
+        }
+    }
+
+    public class ShoppingCartMemento implements Memento {
+
+        private List<Product> products;
+
+        public ShoppingCartMemento(List<Product> products) {
+            this.products = new ArrayList<>(products);
+        }
+        @Override
+        public String getDescription() {
+            return products.toString();
+        }
+    }
 }
